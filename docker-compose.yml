@@ -1,0 +1,32 @@
+version: "3.8"
+
+services:
+   php:
+      image: php:8.1-apache
+      container_name: php-app
+      build:
+         context: .
+         dockerfile: Dockerfile
+      volumes:
+         - ./app:/var/www/html
+      ports:
+         - 8080:80
+      depends_on:
+         - mariadb
+      environment:
+         - MYSQL_HOST=${MYSQL_HOST}
+         - MYSQL_USER=${MYSQL_USER}
+         - MYSQL_PASSWORD=${MYSQL_PASSWORD}
+
+   mariadb:
+      image: mariadb:10.5
+      container_name: mariadb
+      environment:
+         MYSQL_ROOT_PASSWORD: ${MYSQL_ROOT_PASSWORD}
+         MYSQL_DATABASE: ${MYSQL_DATABASE}
+         MYSQL_USER: ${MYSQL_USER}
+         MYSQL_PASSWORD: ${MYSQL_PASSWORD}
+      ports:
+         - 3307:3307
+      volumes:
+         - ./mariadb:/var/lib/mysql
